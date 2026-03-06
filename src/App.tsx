@@ -109,9 +109,9 @@ export default function App() {
   const clearWorkbench = () => setWorkbench([]);
 
   return (
-    <div className="min-h-screen p-4 md:p-8 max-w-7xl mx-auto">
+    <div className="h-screen flex flex-col p-4 md:p-8 max-w-7xl mx-auto overflow-hidden">
       {/* Header */}
-      <header className="mb-6 md:mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <header className="mb-4 md:mb-6 shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6">
         <div>
           <h1 className="text-2xl sm:text-4xl md:text-7xl font-serif font-bold tracking-tight mb-1 md:mb-2 whitespace-nowrap">
             SKYRIM <span className="italic font-normal">Alchemy Lab</span>
@@ -134,7 +134,7 @@ export default function App() {
       </header>
 
       {/* Mobile Tabs Navigation */}
-      <div className="flex lg:hidden mb-6 border-b border-black/10">
+      <div className="flex lg:hidden mb-4 shrink-0 border-b border-black/10">
         <button 
           onClick={() => setActiveTab('list')}
           className={`flex-1 py-3 text-xs font-mono uppercase tracking-widest transition-all ${activeTab === 'list' ? 'border-b-2 border-black font-bold' : 'opacity-40'}`}
@@ -154,10 +154,10 @@ export default function App() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 flex-1 min-h-0">
         {/* Left: Ingredient List - Hidden on mobile if lab tab is active */}
-        <div className={`lg:col-span-4 flex flex-col gap-4 ${activeTab === 'lab' ? 'hidden lg:flex' : 'flex'}`}>
-          <div className="skyrim-card overflow-hidden flex flex-col h-[450px] lg:h-[750px]">
+        <div className={`lg:col-span-4 flex flex-col gap-4 min-h-0 ${activeTab === 'lab' ? 'hidden lg:flex' : 'flex'}`}>
+          <div className="skyrim-card overflow-hidden flex flex-col flex-1 min-h-0">
             <div className="overflow-y-auto flex-1 scrollbar-thin scrollbar-thumb-black/20 scrollbar-track-transparent bg-white">
               <div className="data-row bg-black text-white cursor-default sticky top-0 z-20 border-b border-white/10">
                 <div 
@@ -205,7 +205,7 @@ export default function App() {
         </div>
 
         {/* Right: Workbench & Results - Hidden on mobile if list tab is active */}
-        <div className={`lg:col-span-8 space-y-8 ${activeTab === 'list' ? 'hidden lg:block' : 'block'}`}>
+        <div className={`lg:col-span-8 overflow-y-auto space-y-8 min-h-0 ${activeTab === 'list' ? 'hidden lg:block' : 'block'}`}>
           {/* Workbench Slots */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -346,7 +346,7 @@ export default function App() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-24 pt-8 border-t border-black/10 flex flex-col md:flex-row justify-between gap-4 text-[10px] font-mono uppercase tracking-widest opacity-40">
+      <footer className="mt-4 pt-4 shrink-0 border-t border-black/10 flex flex-col md:flex-row justify-between gap-4 text-[10px] font-mono uppercase tracking-widest opacity-40">
         <div>Skyrim Alchemy Workbench v2.0.0</div>
         <div className="flex gap-6">
           <span>Total Ingredients: {INGREDIENTS.length}</span>
