@@ -12,7 +12,7 @@ A web-based alchemy workbench for **The Elder Scrolls V: Skyrim**. Browse all in
 
 ## Live Demo
 
-👉 **https://\<your-username\>.github.io/skyrim-alchemy-lab/**
+👉 **https://CrowntailTW0608.github.io/skyrim-alchemy-lab/**
 
 ## Run Locally
 
