@@ -154,9 +154,9 @@ export default function App() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 flex-1 min-h-0">
+      <div className="flex flex-col lg:grid lg:grid-cols-12 gap-8 flex-1 min-h-0">
         {/* Left: Ingredient List - Hidden on mobile if lab tab is active */}
-        <div className={`lg:col-span-4 flex flex-col gap-4 min-h-0 ${activeTab === 'lab' ? 'hidden lg:flex' : 'flex'}`}>
+        <div className={`lg:col-span-4 flex flex-col gap-4 min-h-0 flex-1 lg:flex-none ${activeTab === 'lab' ? 'hidden lg:flex' : 'flex'}`}>
           <div className="skyrim-card overflow-hidden flex flex-col flex-1 min-h-0">
             <div className="overflow-y-auto flex-1 scrollbar-thin scrollbar-thumb-black/20 scrollbar-track-transparent bg-white">
               <div className="data-row bg-black text-white cursor-default sticky top-0 z-20 border-b border-white/10">
@@ -205,7 +205,7 @@ export default function App() {
         </div>
 
         {/* Right: Workbench & Results - Hidden on mobile if list tab is active */}
-        <div className={`lg:col-span-8 overflow-y-auto space-y-8 min-h-0 ${activeTab === 'list' ? 'hidden lg:block' : 'block'}`}>
+        <div className={`lg:col-span-8 overflow-y-auto space-y-8 min-h-0 flex-1 lg:flex-none ${activeTab === 'list' ? 'hidden lg:block' : 'block'}`}>
           {/* Workbench Slots */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
