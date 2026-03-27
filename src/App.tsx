@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, FlaskConical, Info, X, ChevronRight, Beaker, Scale, Coins, Sparkles, Plus, Trash2, Wand2, ChevronUp, ChevronDown } from 'lucide-react';
+import { Search, FlaskConical, Info, X, ChevronRight, Beaker, Scale, Coins, Sparkles, Plus, Trash2, Wand2, ChevronUp, ChevronDown, Star } from 'lucide-react';
 import { INGREDIENTS, Ingredient, EFFECT_VALUES } from './data/ingredients';
 
 export default function App() {
@@ -8,12 +8,16 @@ export default function App() {
   const [workbench, setWorkbench] = useState<Ingredient[]>([]);
   const [sortConfig, setSortConfig] = useState<{ key: 'name' | 'value', direction: 'asc' | 'desc' }>({ key: 'name', direction: 'asc' });
   const [activeTab, setActiveTab] = useState<'list' | 'lab'>('list');
+  const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
   const filteredIngredients = useMemo(() => {
     return INGREDIENTS.filter(ing => 
       ing.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       ing.nameZh.includes(searchTerm)
-    ).sort((a, b) => {
+    ).filter(ing => {
+      return !showFavoritesOnly || favoriteIds.includes(ing.id);
+    }).sort((a, b) => {
       if (sortConfig.key === 'name') {
         const comparison = a.name.localeCompare(b.name);
         return sortConfig.direction === 'asc' ? comparison : -comparison;
@@ -22,7 +26,7 @@ export default function App() {
         return sortConfig.direction === 'asc' ? comparison : -comparison;
       }
     });
-  }, [searchTerm, sortConfig]);
+  }, [searchTerm, sortConfig, showFavoritesOnly, favoriteIds]);
 
   const toggleSort = (key: 'name' | 'value') => {
     setSortConfig(prev => ({
@@ -106,6 +110,12 @@ export default function App() {
     setWorkbench(workbench.filter(w => w.id !== id));
   };
 
+  const toggleFavorite = (id: string) => {
+    setFavoriteIds(prev =>
+      prev.includes(id) ? prev.filter(fid => fid !== id) : [...prev, id]
+    );
+  };
+
   const clearWorkbench = () => setWorkbench([]);
 
   return (
@@ -157,6 +167,18 @@ export default function App() {
       <div className="flex flex-col lg:grid lg:grid-cols-12 gap-8 flex-1 min-h-0">
         {/* Left: Ingredient List - Hidden on mobile if lab tab is active */}
         <div className={`lg:col-span-4 flex flex-col gap-4 min-h-0 flex-1 lg:flex-none ${activeTab === 'lab' ? 'hidden lg:flex' : 'flex'}`}>
+          <div className="flex items-center justify-between gap-3 px-1 shrink-0">
+            <span className="text-[10px] font-mono uppercase tracking-widest opacity-50">
+              Favorites: {favoriteIds.length}
+            </span>
+            <button
+              type="button"
+              onClick={() => setShowFavoritesOnly(prev => !prev)}
+              className={`text-[10px] font-mono uppercase tracking-widest border px-2 py-1 transition-colors ${showFavoritesOnly ? 'bg-black text-white border-black' : 'border-black/20 hover:border-black'}`}
+            >
+              {showFavoritesOnly ? 'Show All' : 'My Favorites'}
+            </button>
+          </div>
           <div className="skyrim-card overflow-hidden flex flex-col flex-1 min-h-0">
             <div className="overflow-y-auto flex-1 scrollbar-thin scrollbar-thumb-black/20 scrollbar-track-transparent bg-white">
               <div className="data-row bg-black text-white cursor-default sticky top-0 z-20 border-b border-white/10">
@@ -181,17 +203,37 @@ export default function App() {
                 <div className="col-header text-white/70 text-right">Add</div>
               </div>
               
+              {filteredIngredients.length === 0 && (
+                <div className="p-6 text-center text-xs opacity-50 font-mono uppercase tracking-widest">
+                  {showFavoritesOnly ? 'No favorites yet.' : 'No ingredients found.'}
+                </div>
+              )}
+
               {filteredIngredients.map(ing => {
                 const isInWorkbench = workbench.find(w => w.id === ing.id);
+                const isFavorite = favoriteIds.includes(ing.id);
                 return (
                   <div 
                     key={ing.id} 
-                    className={`data-row ${isInWorkbench ? 'opacity-30 pointer-events-none' : ''}`}
+                    className={`data-row ${isInWorkbench ? 'opacity-30' : ''}`}
                     onClick={() => !isInWorkbench && addToWorkbench(ing)}
                   >
-                    <div className="flex flex-col">
-                      <span className="font-bold text-sm">{ing.name}</span>
-                      <span className="text-xs opacity-60">{ing.nameZh}</span>
+                    <div className="flex items-center justify-between gap-2 min-w-0">
+                      <div className="flex flex-col min-w-0">
+                        <span className="font-bold text-sm truncate">{ing.name}</span>
+                        <span className="text-xs opacity-60 truncate">{ing.nameZh}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleFavorite(ing.id);
+                        }}
+                        className="shrink-0 p-1 -mr-1 text-black/30 hover:text-black transition-colors"
+                        aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                      >
+                        <Star className={`w-4 h-4 ${isFavorite ? 'fill-amber-400 text-amber-500' : ''}`} />
+                      </button>
                     </div>
                     <div className="data-value text-right text-xs self-center">{ing.value}</div>
                     <div className="flex justify-end items-center">
